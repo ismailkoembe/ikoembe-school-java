@@ -19,7 +19,6 @@ public class SchoolController {
     SchoolRepository schoolRepository;
 
     @GetMapping("/isLive")
-    @PreAuthorize("hasRole('ADMIN')")
     @ApiOperation("Client should call this api to get all guardian info thus guardian can be associated for student")
     public ResponseEntity<?> isLive(@RequestHeader String something){
         return ResponseEntity.ok("Hello"+something);
