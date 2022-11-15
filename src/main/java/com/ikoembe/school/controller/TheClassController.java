@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -17,6 +18,9 @@ import java.util.Optional;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/api/classes")
 public class TheClassController {
+    @Value("${usermsurl}")
+    private String url;
+
     @Autowired
     TheClassRepository classRepository;
 
@@ -48,10 +52,11 @@ public class TheClassController {
                     .body(("Error: This class is not found"));
         }
         //TODO validate account ID and add role
-        User user = restTemplate.getForObject("http://localhost:8080/api/user/doSomething/{accountId}",
+        User user = restTemplate.getForObject(url+"/api/user/findByAccountId/{accountId}",
                 User.class, accountId);
         log.info("Student is found. {accountId}", user.getAccountId());
 
+        //TODO : add user if it is not added yet
         Optional<TheClass> theClass = classRepository.findByName(className);
         theClass.get().getStudents().add(user.getAccountId());
         classRepository.save(theClass.get());
