@@ -2,6 +2,7 @@ package com.ikoembe.school.controller;
 
 import com.ikoembe.school.models.Lesson;
 import com.ikoembe.school.repository.LessonService;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ public class LessonController {
     LessonService lessonService;
 
     @PostMapping(value = "/add")
+    @ApiOperation("Creates a lesson")
     public ResponseEntity<?> addLesson ( @RequestBody Lesson lesson){
         if (lessonService.existsByName(lesson.getName())){
             return ResponseEntity
@@ -32,12 +34,14 @@ public class LessonController {
     }
 
     @GetMapping(value = "/all")
+    @ApiOperation("Returns all lessons")
     public ResponseEntity<List<Lesson>> getAllLessons(){
         return ResponseEntity.ok().body(lessonService.findAll());
 
     }
 
     @DeleteMapping(value = "/deleteByName")
+    @ApiOperation("Deletes lesson by name")
     public ResponseEntity<?> deleteByName(@RequestHeader String name){
         if(lessonService.findByName(name).isPresent()) {
             String id = lessonService.findByName(name).get().getId();

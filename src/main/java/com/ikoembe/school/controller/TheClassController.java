@@ -2,6 +2,7 @@ package com.ikoembe.school.controller;
 
 import com.ikoembe.school.models.TheClass;
 import com.ikoembe.school.repository.TheClassRepository;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ public class TheClassController {
     private RestTemplate restTemplate;
 
     @PostMapping(value = "/createClass")
+    @ApiOperation("Creates class")
     public ResponseEntity<?> createClass (@RequestBody TheClass theClass){
         if (classRepository.existsByName(theClass.getName())){
             return ResponseEntity
@@ -37,6 +39,7 @@ public class TheClassController {
     }
 
     @PostMapping(value = "/addStudent")
+    @ApiOperation("Adds students into class")
     public ResponseEntity<?> addStudent(@RequestHeader String className, @RequestHeader String accountId){
         if (!classRepository.existsByName(className)){
             log.error("Class is not found");
@@ -56,6 +59,7 @@ public class TheClassController {
     }
 
     @PostMapping(value = "/addTeacher")
+    @ApiOperation("Adds teacher into class")
     public ResponseEntity<?> addTeacher(@RequestHeader String className, @RequestHeader String accountId){
         if (!classRepository.existsByName(className)){
             log.error("Class is not found");
@@ -64,7 +68,6 @@ public class TheClassController {
                     .body(("Error: This class is not found"));
         }
         //TODO validate account ID and add role
-
 
         Optional<TheClass> theClass = classRepository.findByName(className);
         theClass.get().getTeachers().add(accountId);
