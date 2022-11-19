@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -18,7 +19,7 @@ import java.util.Optional;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/api/classes")
 public class TheClassController {
-    @Value("${usermsurl}")
+    @Value("${userms.baseurl}")
     private String url;
 
     @Autowired
@@ -26,6 +27,12 @@ public class TheClassController {
 
     @Autowired
     private RestTemplate restTemplate;
+
+//    public TheClassController(@Value("${userms.baseurl}") String url ,RestTemplateBuilder builder) {
+//    // Instead of creating bean, this constructor can also be used.
+//
+//        this.restTemplate = builder.rootUri(url).build();
+//    }
 
     @PostMapping(value = "/createClass")
     @ApiOperation("Creates class")
@@ -52,9 +59,9 @@ public class TheClassController {
                     .body(("Error: This class is not found"));
         }
         //TODO validate account ID and add role
-        User user = restTemplate.getForObject(url+"/api/user/findByAccountId/{accountId}",
+        User user = restTemplate.getForObject(url+"findByAccountId/{accountId}",
                 User.class, accountId);
-        log.info("Student is found. {accountId}", user.getAccountId());
+        log.info("Student is found {}", user.getAccountId());
 
         //TODO : add user if it is not added yet
         Optional<TheClass> theClass = classRepository.findByName(className);

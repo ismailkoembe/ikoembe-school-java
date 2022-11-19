@@ -12,11 +12,16 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Lesson {
     @Id
     private String id;
+
     @Indexed
-    private String name;
+    private String name; //math
 
     private boolean isActive;
 
     @Indexed
-    private String code;
+    private String code; //1234
+
+    //TODO : Add some description
+
+    //TODO: implement avalibleFor for students
 }
