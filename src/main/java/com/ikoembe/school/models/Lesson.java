@@ -14,14 +14,17 @@ public class Lesson {
     private String id;
 
     @Indexed
-    private String name; //math
+    private String name;
 
     private boolean isActive;
 
     @Indexed
-    private String code; //1234
+    private String code;
 
-    //TODO : Add some description
+    private String description;
 
-    //TODO: implement avalibleFor for students
+    private String [] availableFor ;
+
+    @Indexed
+    private boolean isMandatory;
 }

@@ -22,5 +22,5 @@ public class School {
     @Indexed(unique = true)
     private String name;
 
-    private List<TheClass> classes;
+    private List<Clazz> classes;
 }

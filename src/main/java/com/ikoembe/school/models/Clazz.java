@@ -1,5 +1,6 @@
 package com.ikoembe.school.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mongodb.lang.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,12 +11,17 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
+import java.util.Map;
 
 
 @Slf4j
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 @Document(value = "classes")
-public class TheClass {
+public class Clazz {
+    public static final String FIELD_TEACHERS = "teachers.accountId";
+    public static final String FIELD_NAMES = "name";
+
+
     @Id
     private String id;
 
@@ -24,6 +30,7 @@ public class TheClass {
 
     private List<String> students;
 
+    @JsonProperty
     private List<String> teachers;
 
     @Nullable
