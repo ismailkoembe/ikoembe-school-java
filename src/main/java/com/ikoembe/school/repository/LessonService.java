@@ -9,5 +9,7 @@ import java.util.Optional;
 @Repository
 public interface LessonService extends MongoRepository <Lesson, String> {
     Optional<Lesson> findByName (String name);
+    Optional<Lesson> findByCode (String name);
     Boolean existsByName(String name);
+    Boolean existsByCode(String code);
 }

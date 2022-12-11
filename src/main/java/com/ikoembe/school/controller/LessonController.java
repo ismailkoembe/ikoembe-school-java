@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -21,14 +23,15 @@ public class LessonController {
 
     @PostMapping(value = "/add")
     @ApiOperation("Creates a lesson")
-    public ResponseEntity<?> addLesson ( @RequestBody Lesson lesson){
-        if (lessonService.existsByName(lesson.getName())){
+    public ResponseEntity<?> addLesson (@Valid @RequestBody Lesson lesson){
+        if (lessonService.existsByName(lesson.getName())
+                &&lessonService.existsByCode(lesson.getCode())){
             return ResponseEntity
                     .badRequest()
                     .body(("Error: This lesson is already added"));
         }
         lessonService.save(lesson);
-        log.info("A new lesson {} added", lesson.getName());
+        log.info("A new lesson {}, {} added", lesson.getName(), lesson.getCode());
         return ResponseEntity.ok().body(lesson);
 
     }
@@ -41,14 +44,17 @@ public class LessonController {
     }
 
     @DeleteMapping(value = "/deleteByName")
-    @ApiOperation("Deletes lesson by name")
-    public ResponseEntity<?> deleteByName(@RequestHeader String name){
-        if(lessonService.findByName(name).isPresent()) {
+    @ApiOperation("Deletes lesson by name and code")
+    public ResponseEntity<?> deleteByName(@Valid @RequestHeader String name,
+                                          @Valid @RequestHeader String code){
+
+        if(lessonService.findByName(name).isPresent()&&lessonService.findByCode(code).isPresent()) {
             String id = lessonService.findByName(name).get().getId();
             lessonService.deleteById(id);
         }else return ResponseEntity.status(400).body("The lesson does not exist");
         return ResponseEntity.ok().body(lessonService.findAll());
 
     }
+
 
 }

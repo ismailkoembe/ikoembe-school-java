@@ -1,6 +1,7 @@
 package com.ikoembe.school.controller;
 
 import com.ikoembe.school.models.Clazz;
+import com.ikoembe.school.models.Lesson;
 import com.ikoembe.school.repository.ClassRepository;
 import com.ikoembe.school.services.ClassService;
 import io.swagger.annotations.ApiOperation;
@@ -90,23 +91,43 @@ public class ClassController {
                     .badRequest()
                     .body(("Error: This class is not found"));
         }
+        Optional<Clazz> theClass =null;
         try {
             User user = restTemplate.getForObject(url+"findByAccountId/{accountId}",
                     User.class, accountId);
             log.info("The teacher is found {}", user.getAccountId());
+            if(user!=null && !classRepository.existsByTeachers(accountId)){
+                log.info("The teacher can be saved");
+                theClass = classRepository.findByName(className);
+                theClass.get().getTeachers().add(accountId);
+                classRepository.save(theClass.get());
+            }
         } catch (Exception e){
             log.error("Teacher is not found");
+            return ResponseEntity
+                    .badRequest()
+                    .body(("Error: This teacher is already registered/not found"));
         }
-        if(!classRepository.existsByTeachers(accountId)){
-            log.info("The teacher is not registered yet");
-            Optional<Clazz> theClass = classRepository.findByName(className);
-            theClass.get().getTeachers().add(accountId);
-            classRepository.save(theClass.get());
-            return ResponseEntity.ok().body(theClass);
+        return ResponseEntity.ok().body(theClass);
+
+    }
+
+    @PostMapping(value = "/addLesson")
+    @ApiOperation("Adds lesson into class")
+    public ResponseEntity<?> addLesson(@RequestHeader String className,
+                                        @RequestBody Lesson lesson){
+        Optional<Clazz> theClass =null;
+        try{
+        theClass = classRepository.findByName(className);
+                theClass.get().getLessons().add(lesson);
+                classRepository.save(theClass.get());
+        } catch (Exception e){
+            log.error("Error : " + e.getMessage());
+            return ResponseEntity
+                    .badRequest()
+                    .body(("Error: " + e.getMessage()));
         }
-        else return ResponseEntity
-                .badRequest()
-                .body(("Error: This teacher is already registered"));
+        return ResponseEntity.ok().body(theClass);
 
     }
 
