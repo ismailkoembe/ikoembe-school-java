@@ -12,4 +12,5 @@ public interface LessonService extends MongoRepository <Lesson, String> {
     Optional<Lesson> findByCode (String name);
     Boolean existsByName(String name);
     Boolean existsByCode(String code);
+
 }

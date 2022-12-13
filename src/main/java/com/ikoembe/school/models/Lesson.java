@@ -10,11 +10,15 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Slf4j @ToString
 @Document(value = "lessons")
 public class Lesson {
+    public static final String FIELD_NAME = "name";
+    public static final String FIELD_CODE = "code";
+
+
     @Id
     private String id;
 
     @Indexed
-    private String name;
+    private Majors name;
 
     private boolean isActive;
 
