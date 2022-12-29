@@ -21,7 +21,15 @@ public class GradeServiceImplementation {
         query.addCriteria(where(Grade.FIELD_STUDENT_ID).is(student));
         query.addCriteria(where(Grade.FIELD_LESSON_NAME).is(lessonName));
         query.addCriteria(where(Grade.FIELD_LESSON_CDDE).is(code));
-        log.info(query.toString());
+        log.debug(query.toString());
+        return mongoTemplate.find(query, Grade.class);
+
+    }
+
+    public List<Grade> findGradesOfAllLessonForStudent(String student) {
+        Query query = new Query();
+        query.addCriteria(where(Grade.FIELD_STUDENT_ID).is(student));
+        log.debug(query.toString());
         return mongoTemplate.find(query, Grade.class);
 
     }
