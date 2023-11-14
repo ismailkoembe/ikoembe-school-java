@@ -6,10 +6,10 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor
-@Slf4j @ToString
+@Data
 @Document(value = "lessons")
 public class Lesson {
+    public static final String FIELD_ID = "id";
     public static final String FIELD_NAME = "name";
     public static final String FIELD_CODE = "code";
 

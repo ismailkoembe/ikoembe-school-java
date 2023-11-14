@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 import java.util.Map;
 
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Slf4j @ToString
+@Data
 @Document(value = "grades")
 public class Grade {
     public static final String FIELD_ID = "id";

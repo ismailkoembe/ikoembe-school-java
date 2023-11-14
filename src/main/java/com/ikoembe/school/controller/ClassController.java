@@ -40,6 +40,15 @@ public class ClassController {
 //        this.restTemplate = builder.rootUri(url).build();
 //    }
 
+
+    @GetMapping(value = "")
+    @ApiOperation("Creates class")
+    public ResponseEntity<?> getClasses (){
+        log.info("Get all classes");
+        List<Clazz> all = classRepository.findAll();
+        return ResponseEntity.ok().body(all);
+    }
+
     @PostMapping(value = "/createClass")
     @ApiOperation("Creates class")
     public ResponseEntity<?> createClass (@RequestBody Clazz clazz){
@@ -119,8 +128,13 @@ public class ClassController {
         Optional<Clazz> theClass =null;
         try{
         theClass = classRepository.findByName(className);
+            boolean isLessonAlreadyAdded = isLessonAlreadyAdded(lesson, theClass);
+            if(!isLessonAlreadyAdded){
                 theClass.get().getLessons().add(lesson);
                 classRepository.save(theClass.get());
+                log.info("The lesson {} with code {} is successfully added", lesson.getName(), lesson.getCode() );
+            } else log.error("The lesson {} with code {} is added already", lesson.getName(), lesson.getCode() );
+
         } catch (Exception e){
             log.error("Error : " + e.getMessage());
             return ResponseEntity
@@ -129,6 +143,13 @@ public class ClassController {
         }
         return ResponseEntity.ok().body(theClass);
 
+    }
+
+    private boolean isLessonAlreadyAdded(Lesson lesson, Optional<Clazz> theClass) {
+        boolean isLessonAlreadyAdded = theClass.get().getLessons().stream()
+                .anyMatch(clazz -> clazz.getName().equals(lesson.getName())
+                && clazz.getCode().equals(lesson.getCode()));
+        return isLessonAlreadyAdded;
     }
 
 }

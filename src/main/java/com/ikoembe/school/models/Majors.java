@@ -2,19 +2,19 @@ package com.ikoembe.school.models;
 
 public enum Majors {
 
-        MATH,
-        PHYSICS,
-        RELIGION,
-        BIOLOGY,
-        ENGLISH,
-        GERMAN,
-        ART,
-        MUSIC;
+        MATH("MATH"),
+        PHYSICS("PHYSICS"),
+        RELIGION("RELIGION"),
+        BIOLOGY("BIOLOGY"),
+        ENGLISH("ENGLISH"),
+        GERMAN("GERMAN"),
+        ART("ART"),
+        MUSIC("MUSIC");
 
-        private String name;
+        public final String name;
 
-        public String getName() {
-            return name;
+        Majors(String name) {
+                this.name = name;
         }
 
 }

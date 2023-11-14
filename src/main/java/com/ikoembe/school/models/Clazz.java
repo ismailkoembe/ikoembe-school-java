@@ -2,10 +2,7 @@ package com.ikoembe.school.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mongodb.lang.Nullable;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -15,7 +12,7 @@ import java.util.Map;
 
 
 @Slf4j
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor
+@Data
 @Document(value = "classes")
 public class Clazz {
     public static final String FIELD_TEACHERS = "teachers.accountId";

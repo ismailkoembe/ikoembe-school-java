@@ -32,7 +32,7 @@ public class LessonController {
     @PostMapping(value = "/add")
     @ApiOperation("Creates a lesson")
     public ResponseEntity<?> addLesson (@Valid @RequestBody Lesson lesson){
-        if (lessonService.existsByName(lesson.getName().getName())
+        if (lessonService.existsByName(lesson.getName().name())
                 &&lessonService.existsByCode(lesson.getCode())){
             return ResponseEntity
                     .badRequest()
