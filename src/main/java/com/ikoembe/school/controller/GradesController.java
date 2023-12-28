@@ -144,12 +144,12 @@ public class GradesController {
                         .stream()
                         .map(group -> group.stream()
                                 .findFirst()
-                                .map(z -> new GradeResponse(
-                                        z.getStudent(),
-                                        z.getTeacher(),
-                                        z.getClassName(),
-                                        z.getLessonMap().get("name"),
-                                        z.getLessonMap().get("code"),
+                                .map(grade -> new GradeResponse(
+                                        grade.getStudent(),
+                                        grade.getTeacher(),
+                                        grade.getClassName(),
+                                        grade.getLessonMap().get("name"),
+                                        grade.getLessonMap().get("code"),
                                         group.stream()
                                                 .map(x -> (x.getGrade() * x.getEfficiency()) / 100)
                                                 .mapToDouble(x -> x)
