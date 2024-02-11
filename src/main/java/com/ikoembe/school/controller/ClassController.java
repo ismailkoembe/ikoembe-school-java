@@ -110,9 +110,9 @@ public class ClassController {
 
     @PostMapping(value = "/addTeacher")
     @Operation(summary = "Add a teacher in a class", description = "Adds a TEACHER into given class. \n" +
-            "            \"If the class is not founds it throws an error. \\n\" +\n" +
-            "            \"By external call, it verifies that the given teacher accountId is saved in userms.\\n\" +\n" +
-            "            \"If the accountid is not valid it throws an error.\\n\" +\n" +
+            "            \"If the class is not founds it throws an error. \n" +
+            "            \"By external call, it verifies that the given teacher accountId is saved in userms.\n" +
+            "            \"If the accountid is not valid it throws an error.\n" +
             "            \"if the teacher is already registered, it throws an error.")
     @ApiResponse(responseCode = "200", description = "A teacher is added successfully",
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = Clazz.class)))
