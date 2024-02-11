@@ -57,7 +57,8 @@ public class ClassController {
     }
 
     @PostMapping(value = "/createClass")
-    @ApiResponse(responseCode = "200", description = "Creates a new class ",
+    @Operation(summary = "Create a class", description = "Creates a new  class")
+    @ApiResponse(responseCode = "200", description = "Class is created",
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = Clazz.class)))
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
@@ -74,11 +75,12 @@ public class ClassController {
     }
 
     @PostMapping(value = "/addStudent")
-    @ApiResponse(responseCode = "200", description = "Adds a student into given class. \n" +
+    @Operation(summary = "Adds a student in a class", description = "Adds a student into given class. \n" +
             "If the class is not founds it throws an error. \n" +
             "By external call, it verifies that the given accountId is saved in userms.\n" +
             "If the accountid is not valid it throws an error.\n" +
-            "if the student is already registered, it throws an error.",
+            "if the student is already registered, it throws an error.")
+    @ApiResponse(responseCode = "200", description = "Student is added successfully",
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = Clazz.class)))
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
@@ -107,11 +109,12 @@ public class ClassController {
     }
 
     @PostMapping(value = "/addTeacher")
-    @ApiResponse(responseCode = "200", description = "Adds a TEACHER into given class. \n" +
-            "If the class is not founds it throws an error. \n" +
-            "By external call, it verifies that the given teacher accountId is saved in userms.\n" +
-            "If the accountid is not valid it throws an error.\n" +
-            "if the teacher is already registered, it throws an error.",
+    @Operation(summary = "Add a teacher in a class", description = "Adds a TEACHER into given class. \n" +
+            "            \"If the class is not founds it throws an error. \\n\" +\n" +
+            "            \"By external call, it verifies that the given teacher accountId is saved in userms.\\n\" +\n" +
+            "            \"If the accountid is not valid it throws an error.\\n\" +\n" +
+            "            \"if the teacher is already registered, it throws an error.")
+    @ApiResponse(responseCode = "200", description = "A teacher is added successfully",
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = Clazz.class)))
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
@@ -145,10 +148,11 @@ public class ClassController {
     }
 
     @PostMapping(value = "/addLesson")
-    @ApiResponse(responseCode = "200", description = "Adds a lesson into given class. \n" +
+    @Operation(summary = "Add a lesson", description = "Adds a lesson into given class. \n" +
             "If the class is not founds it throws an error. \n" +
             "If the accountid is not valid it throws an error.\n" +
-            "if the lesson is already added, it throws an error.",
+            "if the lesson is already added, it throws an error.")
+    @ApiResponse(responseCode = "200", description = "The lesson is added successfully",
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = Clazz.class)))
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
