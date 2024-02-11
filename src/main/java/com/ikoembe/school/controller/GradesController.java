@@ -6,7 +6,10 @@ import com.ikoembe.school.models.Grade;
 import com.ikoembe.school.repository.ClassRepository;
 import com.ikoembe.school.repository.GradeRepository;
 import com.ikoembe.school.services.GradeServiceImplementation;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,7 +40,13 @@ public class GradesController {
     private Double threshold;
 
     @PostMapping(value = "/addGrade")
-    @ApiOperation("Teacher can add grade for single student")
+    @Operation(summary = "Add a grade", description = "Teacher can add grade for single student.")
+    @ApiResponse(responseCode = "200", description = "Teacher can add grade for single student. \n" +
+            "In order to add a grade, the classname, the teacher and the student should exists  \n" +
+            "otherwise it throws an error",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = Grade.class)))
+    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     public ResponseEntity<?> addGrade(@Valid @RequestBody Grade grade) {
         if (classRepository.existsByName(grade.getClassName()) &&
                 classRepository.existsByTeachers(grade.getTeacher()) &&
@@ -53,8 +62,14 @@ public class GradesController {
     }
 
 
-    @PostMapping(value = "/allGrades")
-    @ApiOperation("Get all grades for a student")
+    @GetMapping(value = "/allGrades")
+    @Operation(summary = "Add a grade", description = "Teacher can get grade for single student.")
+    @ApiResponse(responseCode = "200", description = "Get all grades for a student. \n" +
+            "In order to add a grade, the classname, the teacher and the student should exists  \n" +
+            "otherwise it throws an error",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = Grade.class)))
+    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     public ResponseEntity<?> getAllGrades(@Valid @RequestBody GradeRequest request) {
         List<Grade> grades = new ArrayList<>();
         if (classRepository.existsByName(request.getClassName()) &&
@@ -72,7 +87,13 @@ public class GradesController {
     }
 
     @PostMapping(value = "/allGradesByLesson")
-    @ApiOperation("Get all grades by lesson name and code for a student")
+    @Operation(summary = "Add a grade", description = "Get all grades by lesson name and code for a student")
+    @ApiResponse(responseCode = "200", description = "Get all grades  by given lesson for a student. \n" +
+            "In order to add a grade, the classname, the teacher and the student should exists  \n" +
+            "otherwise it throws an error",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = Grade.class)))
+    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     public ResponseEntity<?> getAllGradesByLesson(@Valid @RequestBody GradeRequest request) {
         List<Grade> grades = null;
         if (classRepository.existsByName(request.getClassName()) &&
@@ -93,7 +114,11 @@ public class GradesController {
     }
 
     @PostMapping(value = "/calculate")
-    @ApiOperation("Calculates the given lesson and returns the aggregation")
+    @Operation(summary = "Add a grade", description = "Calculates the given lesson and returns the aggregation")
+    @ApiResponse(responseCode = "200", description = "Calculates the given lesson and returns the aggregation.",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = GradeResponse.class)))
+    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     public ResponseEntity<?> calculate(
             @RequestHeader String student,
             @RequestHeader String lesson,
@@ -126,7 +151,11 @@ public class GradesController {
     }
 
     @PostMapping(value = "/calculateAll")
-    @ApiOperation("Calculates the given lesson and returns the aggregation")
+    @Operation(summary = "Calculates all grade", description = "Calculates all lesson and returns the aggregation")
+    @ApiResponse(responseCode = "200", description = "Calculates the given lesson and returns the aggregation.",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = GradeResponse.class)))
+    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     public ResponseEntity<?> calculateAllGradesForSingleUser(
             @RequestHeader String student) {
         List<Grade> grades = gradeServiceImplementation.findGradesOfAllLessonForStudent(student);
@@ -151,16 +180,16 @@ public class GradesController {
                                         grade.getLessonMap().get("name"),
                                         grade.getLessonMap().get("code"),
                                         group.stream()
-                                                .map(x -> (x.getGrade() * x.getEfficiency()) / 100)
+                                                .map(grade1 -> (grade1.getGrade() * grade1.getEfficiency()) / 100)
                                                 .mapToDouble(x -> x)
                                                 .sum(),
                                         group.stream()
-                                                .map(x -> (x.getGrade() * x.getEfficiency()) / 100)
+                                                .map(grade1 -> (grade1.getGrade() * grade1.getEfficiency()) / 100)
                                                 .mapToDouble(x -> x)
                                                 .sum() > threshold,
                                         group.size(),
                                         group.stream()
-                                                .mapToDouble(x -> x.getEfficiency())
+                                                .mapToDouble(Grade::getEfficiency)
                                                 .sum()
                                 )))
                         .collect(Collectors.toList()));

@@ -1,10 +1,8 @@
 package com.ikoembe.school.worker;
 
 import lombok.extern.slf4j.Slf4j;
-import model.User;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
-import rabbitmq.UserCreatedMessage;
 
 @Slf4j
 //@Worker
@@ -12,7 +10,10 @@ import rabbitmq.UserCreatedMessage;
 public class ClassWorker {
 
     @RabbitListener(queues = "user.operation")
-    public void onUserCreate(String user) {
-        log.info ("Hello {}", user);
+    public void onUserCreate(String user) throws InterruptedException {
+        log.info("Hello {}", user);
+        long start = System.currentTimeMillis();
+        Thread.sleep(5000);
+        log.info("Completed in : {} ms", System.currentTimeMillis() - start);
     }
 }

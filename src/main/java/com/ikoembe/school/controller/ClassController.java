@@ -4,7 +4,10 @@ import com.ikoembe.school.models.Clazz;
 import com.ikoembe.school.models.Lesson;
 import com.ikoembe.school.repository.ClassRepository;
 import com.ikoembe.school.services.ClassService;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +45,11 @@ public class ClassController {
 
 
     @GetMapping(value = "")
-    @ApiOperation("Creates class")
+    @Operation(summary = "Gets all classes", description = "Gets all classes.")
+    @ApiResponse(responseCode = "200", description = "All classes ",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = Clazz.class)))
+    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     public ResponseEntity<?> getClasses (){
         log.info("Get all classes");
         List<Clazz> all = classRepository.findAll();
@@ -50,7 +57,10 @@ public class ClassController {
     }
 
     @PostMapping(value = "/createClass")
-    @ApiOperation("Creates class")
+    @ApiResponse(responseCode = "200", description = "Creates a new class ",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = Clazz.class)))
+    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     public ResponseEntity<?> createClass (@RequestBody Clazz clazz){
         if (classRepository.existsByName(clazz.getName())){
             return ResponseEntity
@@ -64,7 +74,14 @@ public class ClassController {
     }
 
     @PostMapping(value = "/addStudent")
-    @ApiOperation("Adds students into class")
+    @ApiResponse(responseCode = "200", description = "Adds a student into given class. \n" +
+            "If the class is not founds it throws an error. \n" +
+            "By external call, it verifies that the given accountId is saved in userms.\n" +
+            "If the accountid is not valid it throws an error.\n" +
+            "if the student is already registered, it throws an error.",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = Clazz.class)))
+    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     public ResponseEntity<?> addStudent(@RequestHeader String className, @RequestHeader String accountId){
         if (!classRepository.existsByName(className)){
             log.error("Class is not found");
@@ -76,22 +93,28 @@ public class ClassController {
                 User.class, accountId);
         log.info("Student is found {}", user.getAccountId());
 
-        if(!classRepository.existsByStudents(accountId)){
+        if (!classRepository.existsByStudents(accountId)) {
             log.info("Student is not registered yet");
             Optional<Clazz> theClass = classRepository.findByName(className);
             theClass.get().getStudents().add(user.getAccountId());
             classRepository.save(theClass.get());
             return ResponseEntity.ok().body(theClass);
 
-        }
-        else return ResponseEntity
+        } else return ResponseEntity
                 .badRequest()
                 .body(("Error: This student is already registered"));
 
     }
 
     @PostMapping(value = "/addTeacher")
-    @ApiOperation("Adds teacher into class")
+    @ApiResponse(responseCode = "200", description = "Adds a TEACHER into given class. \n" +
+            "If the class is not founds it throws an error. \n" +
+            "By external call, it verifies that the given teacher accountId is saved in userms.\n" +
+            "If the accountid is not valid it throws an error.\n" +
+            "if the teacher is already registered, it throws an error.",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = Clazz.class)))
+    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     public ResponseEntity<?> addTeacher(@RequestHeader String className,
                                         @RequestHeader String accountId){
         if (!classRepository.existsByName(className)){
@@ -122,7 +145,13 @@ public class ClassController {
     }
 
     @PostMapping(value = "/addLesson")
-    @ApiOperation("Adds lesson into class")
+    @ApiResponse(responseCode = "200", description = "Adds a lesson into given class. \n" +
+            "If the class is not founds it throws an error. \n" +
+            "If the accountid is not valid it throws an error.\n" +
+            "if the lesson is already added, it throws an error.",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = Clazz.class)))
+    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     public ResponseEntity<?> addLesson(@RequestHeader String className,
                                         @RequestBody Lesson lesson){
         Optional<Clazz> theClass =null;

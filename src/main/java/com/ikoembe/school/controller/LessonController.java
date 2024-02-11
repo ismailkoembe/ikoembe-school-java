@@ -3,7 +3,10 @@ package com.ikoembe.school.controller;
 import com.ikoembe.school.models.Lesson;
 import com.ikoembe.school.repository.LessonService;
 import com.ikoembe.school.services.LessonServiceImplementation;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,8 +17,6 @@ import javax.validation.Valid;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -30,7 +31,12 @@ public class LessonController {
     LessonServiceImplementation lessonServiceImplementation;
 
     @PostMapping(value = "/add")
-    @ApiOperation("Creates a lesson")
+    @Operation(summary = "Adds a lesson", description = "Creates a lesson. If the lesson is already created, \\n\" +\n" +
+            "            \"it throws an error")
+    @ApiResponse(responseCode = "200", description = "Lesson is created succesfully",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = Lesson.class)))
+    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     public ResponseEntity<?> addLesson (@Valid @RequestBody Lesson lesson){
         if (lessonService.existsByName(lesson.getName().name())
                 &&lessonService.existsByCode(lesson.getCode())){
@@ -45,7 +51,11 @@ public class LessonController {
     }
 
     @PatchMapping(value = "/update")
-    @ApiOperation("Update a lesson")
+    @Operation(summary = "Updates given lesson", description = "Updates given lesson")
+    @ApiResponse(responseCode = "200", description = "Lesson updated successfully",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = Lesson.class)))
+    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     public ResponseEntity<?> update ( @RequestHeader String code, @RequestHeader String name,
                                       @RequestBody Map<String, Object> patches){
         try {
@@ -64,14 +74,22 @@ public class LessonController {
     }
 
     @GetMapping(value = "/all")
-    @ApiOperation("Returns all lessons")
+    @Operation(summary = "Returns all lessons", description = "Returns all lessons")
+    @ApiResponse(responseCode = "200", description = "Lesson updated successfully",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = Lesson.class)))
+    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     public ResponseEntity<List<Lesson>> getAllLessons(){
         return ResponseEntity.ok().body(lessonService.findAll());
 
     }
 
     @DeleteMapping(value = "/deleteByName")
-    @ApiOperation("Deletes lesson by name and code")
+    @Operation(summary = "Deletes lesson by name and code", description = "Deletes lesson by name and code")
+    @ApiResponse(responseCode = "200", description = "Lesson updated successfully",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = Lesson.class)))
+    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     public ResponseEntity<?> deleteByName(@Valid @RequestHeader String name,
                                           @Valid @RequestHeader String code){
 
