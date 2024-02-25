@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,6 +37,9 @@ public class ClassController {
 
     @Autowired
     private ClassService classService;
+
+    @Autowired
+    private WebClient webClient;
 
 
 //    public ClassController(@Value("${userms.baseurl}") String url ,RestTemplateBuilder builder) {
@@ -128,10 +133,17 @@ public class ClassController {
         }
         Optional<Clazz> theClass =null;
         try {
-            User user = restTemplate.getForObject(url+"findByAccountId/{accountId}",
-                    User.class, accountId);
+//            User user = restTemplate.getForObject(url+"findByAccountId/{accountId}",
+//                    User.class, accountId);
+
+            Mono<User> userMono = webClient.get()
+                    .uri("/findByAccountId/{accountId}", accountId)
+                    .retrieve()
+                    .bodyToMono(User.class);
+
+            User user = userMono.block(); // blocking call to get the user
             log.info("The teacher is found {}", user.getAccountId());
-            if(user!=null && !classRepository.existsByTeachers(accountId)){
+            if (user != null && !classRepository.existsByTeachers(accountId)) {
                 log.info("The teacher can be saved");
                 theClass = classRepository.findByName(className);
                 theClass.get().getTeachers().add(accountId);
